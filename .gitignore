@@ -1,0 +1,57 @@
+# =====================
+# Haskell build outputs
+# =====================
+
+# Cabal
+dist/
+dist-newstyle/
+
+# Stack
+.stack-work/
+
+# GHC
+*.hi
+*.o
+*.dyn_o
+*.dyn_hi
+*.hie
+*.prof
+*.eventlog
+
+# GHCi
+.ghci-history
+.ghci-history*
+.ghci_script
+.ghci_script*
+
+# Haskell Language Server
+.hls/
+
+# =====================
+# Executables
+# =====================
+
+Main
+main
+*.exe
+
+# =====================
+# Editor / IDE
+# =====================
+
+.vscode/
+.idea/
+
+# =====================
+# OS files (macOS)
+# =====================
+
+.DS_Store
+
+# =====================
+# Temporary / backup files
+# =====================
+
+*~
+*.swp
+*.tmp
