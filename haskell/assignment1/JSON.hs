@@ -28,7 +28,9 @@ toString (JBool False)  = "false"
 toString JNull          = "null"
 toString (JArray lst)   = "[" ++ list2str lst ++ "]"
 
-
+-- ******************************************
+toString (JObject obj)  = "{" ++ obj2str obj ++ "}"
+-- ******************************************
 
 
 
@@ -46,8 +48,12 @@ list2str (x:[]) = (toString x)
 list2str (x:xs) = (toString x) ++ ",\n " ++ (list2str xs)
 
 
-
-
+-- ******************************************
+obj2str :: [(String, JValue)] -> String
+obj2str [] = ""
+obj2str ((k,v):[]) = k ++ ":" ++ (toString v)
+obj2str ((k,v):xs) = k ++ ":" ++ (toString v) ++ "," ++ (obj2str xs)
+-- ******************************************
 
 
 
