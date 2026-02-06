@@ -21,6 +21,9 @@ Representing this language in Haskell is fairly straightforward.
 > data Exp = ETrue
 >          | EFalse
 >          | Eif Exp Exp Exp
+>          | EInt Int
+>          | Esucc Exp
+>          | Epred Exp
 >  deriving Show
 
 
@@ -37,6 +40,7 @@ As with our expressions, representing our values in Haskell is straightforward:
 
 > data Val = VTrue
 >          | VFalse
+>          | VInt Int
 >  deriving Show
 
 The next part is to define our "evaluate" function.
@@ -88,6 +92,13 @@ You must complete the other cases.
 > evaluate (Eif e1 e2 e3) = case evaluate e1 of
 >     VTrue -> evaluate e2
 >     VFalse -> evaluate e3
+> evaluate (EInt n) = VInt n
+> evaluate (Esucc e) = case evaluate e of
+>     VInt n -> VInt (n + 1)
+>     _ -> error "succ applied to non-integer"
+> evaluate (Epred e) = case evaluate e of
+>     VInt n -> VInt (n - 1)
+>     _ -> error "pred applied to non-integer"
 
 
 And here we have a couple of programs to test.
@@ -95,6 +106,10 @@ prog1 should evaluate to VTrue and prog2 should evaluate to VFalse
 
 > prog1 = Eif ETrue ETrue EFalse
 > prog2 = Eif (Eif ETrue EFalse ETrue) ETrue (Eif ETrue EFalse ETrue)
+> prog3 = EInt 5
+> prog4 = Esucc (EInt 3)
+> prog5 = Epred (EInt 10)
+> prog6 = Esucc (Epred (EInt 7))
 
 The following lines evaluate the test expressions and display the results.
 Note the type of main.  'IO ()' indicates that the function performs IO and returns nothing.
@@ -106,6 +121,10 @@ when we deal with the great and terrible subject of _monads_.)
 > main = do
 >   putStrLn $ "Evaluating '" ++ (show prog1) ++ "' results in " ++ (show $ evaluate prog1)
 >   putStrLn $ "Evaluating '" ++ (show prog2) ++ "' results in " ++ (show $ evaluate prog2)
+>   putStrLn $ "Evaluating '" ++ (show prog3) ++ "' results in " ++ (show $ evaluate prog3)
+>   putStrLn $ "Evaluating '" ++ (show prog4) ++ "' results in " ++ (show $ evaluate prog4)
+>   putStrLn $ "Evaluating '" ++ (show prog5) ++ "' results in " ++ (show $ evaluate prog5)
+>   putStrLn $ "Evaluating '" ++ (show prog6) ++ "' results in " ++ (show $ evaluate prog6)
 
 
 Once you have the evaluate function working
