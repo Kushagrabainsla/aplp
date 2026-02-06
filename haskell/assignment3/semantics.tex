@@ -13,7 +13,7 @@
 
 % Commands for language expressions and values
 \newcommand{\true}{\mbox{\tt true}}
-\newcommand{\false}{\mbox{\tt false}}\title{Operational Semantics for Bool* Language}
+\newcommand{\false}{\mbox{\tt false}}\title{Operational Semantics for BoolInt* Language}
 \newcommand{\ife}[3]{\mbox{\tt if}~{#1}~\mbox{\tt then}~{#2}~\mbox{\tt else}~{#3}}
 \newcommand{\suc}[1]{\mbox{\tt succ}~{#1}}
 \newcommand{\prd}[1]{\mbox{\tt pred}~{#1}}
@@ -38,9 +38,9 @@
 }
 
 \author{
-  Thomas H. Austin \\
+  Kushagra Bainsla \\
   San Jos\'{e} State University \\
-  thomas.austin@sjsu.edu
+  kushagra.bainsla@sjsu.edu
   }
 
 \begin{document}
@@ -48,13 +48,13 @@
 
 \begin{abstract}
 In this paper, we will provide a review of the big-step operational semantics
-for the Bool* language we discussed in class.
+for the BoolInt* language, an extension of Bool* with integer values and arithmetic operations (succ and pred).
 \end{abstract}
 
 %%%%
 %\section{Introduction}
 
-Bool* is a very minimal language that allows us to experiment with operational semantics.
+BoolInt* is a very minimal language that allows us to experiment with operational semantics, now extended to include integer values and arithmetic operations.
 
 First, we define the valid expressions in our language.
 These expressions dictate the possibilities of what expressions
@@ -64,32 +64,36 @@ Statements might not evaluate to a value;
 expressions always will.)
 
 \begin{figure}
-\caption{The Bool* language}
-\label{fig:lang}
+\caption{The BoolInt* language}
+\label{fig:lang2}
 \[
   \begin{array}{ll@{\qquad\qquad}l}
   \mydefhead{e ::=\qquad\qquad\qquad\qquad}{Expressions}
   \mydefcase{\true}{true value}
   \mydefcase{\false}{false value}
+  \mydefcase{i}{integers}
   \mydefcase{\ife e e e}{conditional expressions}
+  \mydefcase{\suc e}{successor}
+  \mydefcase{\prd e}{predecessor}
   \\
   \mydefhead{v ::=\qquad\qquad\qquad\qquad}{Values}
   \mydefcase{\true}{true value}
   \mydefcase{\false}{false value}
+  \mydefcase{i}{integers}
 \end{array}
 \]
 \end{figure}
 
-Figure~\ref{fig:lang} shows the list of expressions and values for the Bool* language.
-Expressions can be the value $\true$, the value $\false$,
-or the conditional expression $\ife e e e$.
-Note that conditional expressions have a recursive structure,
-with 3 sub-expressions.
+Figure~\ref{fig:lang2} shows the list of expressions and values for the BoolInt* language.
+Expressions can be the value $\true$, the value $\false$, an integer $i$,
+or the conditional expression $\ife e e e$, or the arithmetic expressions $\suc e$ and $\prd e$.
+Note that conditional and arithmetic expressions have a recursive structure,
+with sub-expressions.
 
 After evaluating a program, we should be able to produce a value in this language.
 (In other languages, we might hit a bad situation and need to crash instead;
 that won't happen in this language.)
-The valid values for Bool* are $\true$ and $\false$.
+The valid values for BoolInt* are $\true$, $\false$, and integers $i$.
 
 With our expressions and values defined,
 we can now specify the semantics for our language.
@@ -102,8 +106,8 @@ To do so, we will use the following big-step evaluation relation:
 The above line should be read as ``the expression $e$ evaluates to the value $v$''.
 
 \begin{figure}
-\caption{Big-step semantics for Bool*}
-\label{fig:bigstep}
+\caption{Big-step semantics for BoolInt*}
+\label{fig:bigstep-boolint}
   {\bf Evaluation Rules:~~~ \fbox{$\bstep{e}{v}$}} \\
 \[
 \begin{array}{r@{\qquad\qquad}c}
@@ -122,21 +126,30 @@ The above line should be read as ``the expression $e$ evaluates to the value $v$
 }{
   \bstep{\ife{e_1}{e_2}{e_3}}{v}
 }
+\bsrule{B-Succ}{
+  \bstep{e}{i}
+}{
+  \bstep{\suc{e}}{i+1}
+}
+\bsrule{B-Pred}{
+  \bstep{e}{i}
+}{
+  \bstep{\prd{e}}{i-1}
+}
 \end{array}
 \]
 \end{figure}
 
 
 
-Figure~\ref{fig:bigstep} shows the big-step evaluation rules for the Bool* language.
-Of course, there are additional possible rules.
+Figure~\ref{fig:bigstep-boolint} shows the big-step evaluation rules for the BoolInt* language.
 
 The \rel{B-Value} rule applies when the expression (to the left of ``$\Downarrow$'')
-is also a value, as defined in Figure~\ref{fig:lang}.
+is also a value, as defined in Figure~\ref{fig:lang2}.
 There are no premises for this rule (above the line),
 meaning that it is an {\em axiom}.
 This rule states that a value evaluates to itself,
-so that \true{} evaluates to \true{} and \false{} evaluates to \false{}.
+so that \true{}, \false{}, and any integer $i$ evaluate to themselves.
 
 Two different rules are needed for handling conditional expressions.
 Which rule applies depends on the premises.
@@ -147,41 +160,7 @@ and $e_2$ evaluates to some value $v$.
 If the premise holds, then the result of evaluating the expression is the value $v$.
 The structure of \rel{B-IfFalse} is similar.
 
-
-\section*{Exercise}
-
-Let's extend the language with new features.
-Our new language will be called BoolInt*.
-The valid expressions and values are shown below:
-
-%\begin{figure}
-%\caption{The BoolInt* language}
-%\label{fig:lang2}
-\[
-  \begin{array}{ll@{\qquad\qquad}l}
-  \mydefhead{e ::=\qquad\qquad\qquad\qquad}{Expressions}
-  \mydefcase{\true}{true value}
-  \mydefcase{\false}{false value}
-  \mydefcase{i}{integers}
-  \mydefcase{\ife e e e}{conditional expressions}
-  \mydefcase{\suc e}{successor}
-  \mydefcase{\prd e}{predecessor}
-  \\
-  \mydefhead{v ::=\qquad\qquad\qquad\qquad}{Values}
-  \mydefcase{\true}{true value}
-  \mydefcase{\false}{false value}
-  \mydefcase{i}{integers}
-\end{array}
-\]
-%\end{figure}
-
-In addition to integers, our expanded language has the ability to increment an integer ($\suc e$)
-and decrement an integer ($\prd e$).
-
-Using LaTeX, write the evaluation rules for these additional constructs.
-If necessary, revise any existing rules.
-
-Then, add these new constructs to the Haskell interpreter that we have been working with.
+The \rel{B-Succ} rule states that if $e$ evaluates to an integer $i$, then $\suc{e}$ evaluates to $i+1$. The \rel{B-Pred} rule states that if $e$ evaluates to an integer $i$, then $\prd{e}$ evaluates to $i-1$.
 
 
 \end{document}
