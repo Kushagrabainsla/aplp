@@ -25,15 +25,15 @@ type BigNum = [Block]
 maxblock = 1000
 
 bigAdd :: BigNum -> BigNum -> BigNum
-bigAdd x y = bigAdd' x y 0
+bigAdd x y = bigAddHelper x y 0
 
-bigAdd' :: BigNum -> BigNum -> Block -> BigNum
-bigAdd' [] [] 0 = []
-bigAdd' [] [] carry = [carry]
-bigAdd' xs [] carry = bigAdd' xs [0] carry
-bigAdd' [] ys carry = bigAdd' [0] ys carry
-bigAdd' (x:xs) (y:ys) carry =
-  newBlock : bigAdd' xs ys newCarry
+bigAddHelper :: BigNum -> BigNum -> Block -> BigNum
+bigAddHelper [] [] 0 = []
+bigAddHelper [] [] carry = [carry]
+bigAddHelper xs [] carry = bigAddHelper xs [0] carry
+bigAddHelper [] ys carry = bigAddHelper [0] ys carry
+bigAddHelper (x:xs) (y:ys) carry =
+  newBlock : bigAddHelper xs ys newCarry
   where
     s = x + y + carry
     newBlock = s `mod` maxblock
@@ -44,7 +44,7 @@ bigSubtract x y =
   if length x < length y
     then error "Negative numbers not supported"
     else reverse $ stripLeadingZeroes $ reverse result
-      where result = bigSubtract' x y 0
+      where result = bigSubtractHelper x y 0
 
 stripLeadingZeroes :: BigNum -> BigNum
 stripLeadingZeroes (0:[]) = [0]
@@ -52,14 +52,14 @@ stripLeadingZeroes (0:xs) = stripLeadingZeroes xs
 stripLeadingZeroes xs = xs
 
 -- Negative numbers are not supported, so you may throw an error in these cases
-bigSubtract' :: BigNum -> BigNum -> Block -> BigNum
-bigSubtract' [] [] 0 = []
-bigSubtract' [] [] _ = error "Negative numbers not supported"
-bigSubtract' (x:xs) [] borrow = bigSubtract' (x:xs) [0] borrow
-bigSubtract' [] _ _ = error "Negative numbers not supported"
-bigSubtract' (x:xs) (y:ys) borrow = 
-  if diff >= 0 then diff : bigSubtract' xs ys 0
-  else (diff + maxblock) : bigSubtract' xs ys 1
+bigSubtractHelper :: BigNum -> BigNum -> Block -> BigNum
+bigSubtractHelper [] [] 0 = []
+bigSubtractHelper [] [] _ = error "Negative numbers not supported"
+bigSubtractHelper (x:xs) [] borrow = bigSubtractHelper (x:xs) [0] borrow
+bigSubtractHelper [] _ _ = error "Negative numbers not supported"
+bigSubtractHelper (x:xs) (y:ys) borrow = 
+  if diff >= 0 then diff : bigSubtractHelper xs ys 0
+  else (diff + maxblock) : bigSubtractHelper xs ys 1
   where
     diff = x - y - borrow
 
@@ -78,12 +78,12 @@ bigDec x = bigSubtract x [1]
 bigMultiply :: BigNum -> BigNum -> BigNum
 bigMultiply [] _ = [0]
 bigMultiply _ [] = [0]
-bigMultiply (x:xs) ys = reverse $ stripLeadingZeroes $ reverse $ bigAdd (mulByBlock ys x 0) (0 : bigMultiply xs ys)
+bigMultiply (x:xs) ys = reverse $ stripLeadingZeroes $ reverse $ bigAdd (multiplyByBlock ys x 0) (0 : bigMultiply xs ys)
 
-mulByBlock :: BigNum -> Block -> Block -> BigNum
-mulByBlock [] _ 0 = []
-mulByBlock [] _ carry = [carry]
-mulByBlock (b:bs) m carry = newBlock : mulByBlock bs m newCarry
+multiplyByBlock :: BigNum -> Block -> Block -> BigNum
+multiplyByBlock [] _ 0 = []
+multiplyByBlock [] _ carry = [carry]
+multiplyByBlock (b:bs) m carry = newBlock : multiplyByBlock bs m newCarry
   where
     prod = b * m + carry
     newBlock = prod `mod` maxblock
