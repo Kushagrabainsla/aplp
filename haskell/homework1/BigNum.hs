@@ -75,6 +75,7 @@ bigDec x = bigSubtract x [1]
 -- school, except dealing with blocks of 3 digits rather than single digits.
 -- If you are having trouble finding a solution, write a helper method that
 -- multiplies a BigNum by an Int.
+-- (The bigMultiply function works just like grade school multiplication. It takes the first block from the first number and multiplies it against the entire second number using multiplyByBlock. Then it recursively multiplies the remaining blocks of the first number with the second number. The crucial part is the 0 : prefix before the recursive call - this shifts the recursive result left by one block position (equivalent to multiplying by 1000), just like how you write each partial product one position to the left in grade school multiplication. Finally, it adds these two partial products together using bigAdd. The bigAdd function handles lists of different lengths automatically, so when you add [984, 360] and [0, 147, 97], it aligns them by position: position 0 adds 984+0, position 1 adds 360+147, and position 2 adds nothing+97, giving [984, 507, 97]. The process repeats recursively until all blocks of the first number have been processed, building up the final result through successive additions of shifted partial products.)
 bigMultiply :: BigNum -> BigNum -> BigNum
 bigMultiply [] _ = [0]
 bigMultiply _ [] = [0]
