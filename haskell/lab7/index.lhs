@@ -42,7 +42,8 @@ be applied to every element of the tree.  As a review of the last lab, define
 fmap for FacetedValues.
 
 > instance Functor FacetedValue where
->   fmap f v = error "Your code here"
+>   fmap f (Raw x) = Raw (f x)
+>   fmap f (Facet k auth unauth) = Facet k (fmap f auth) (fmap f unauth)
 
 
 The following function gives an example of how a FacetedValue can be used.
@@ -67,8 +68,10 @@ In order to make that work, we need need to add support for Applicative Functors
 Define the behavior of the Functor below
 
 > instance Applicative FacetedValue where
->   pure = error "Your code here"
->   fv1 <*> fv2 = error "Your code here"
+>   pure = Raw
+>   Raw f <*> Raw x = Raw (f x)
+>   Raw f <*> Facet k x1 x2 = Facet k (Raw f <*> x1) (Raw f <*> x2)
+>   Facet k f1 f2 <*> v = Facet k (f1 <*> v) (f2 <*> v)
 
 
 The code below gives an example of how this might come up.  If code authorized
@@ -84,3 +87,10 @@ combined balance.  However, you as the customer can see the true values.
 >   print $ view (Set.fromList ["Bank of America"]) combinedBalance -- Should print 44
 >   print $ view (Set.fromList ["Wells Fargo"]) combinedBalance -- Should print 122
 >   print $ view (Set.fromList ["Bank of America", "Wells Fargo"]) combinedBalance -- Should print 166
+
+> main :: IO ()
+> main = do
+>   testFmap
+>   putStrLn ""
+>   putStrLn "Applicative tests:"
+>   testApplicative
