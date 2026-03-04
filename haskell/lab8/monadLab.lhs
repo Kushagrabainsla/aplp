@@ -93,3 +93,6 @@ Here is one example:
 > testIncDec = Just 7 >>= mincr >>= mincr >>= mincr >>= mdecr
 
 Does bind seem more natural in this case than using do?  Why or why not?
+In simple chaining cases like `testIncDec`, using bind (`>>=`) feels more natural and concise because each step directly passes its result to the next, and the code reads left-to-right like a pipeline.
+The `do` notation is more useful when you need to extract intermediate values, perform additional logic, or handle more complex flows.
+For straightforward sequences, bind is cleaner; for more involved logic, `do` is clearer and more readable.
