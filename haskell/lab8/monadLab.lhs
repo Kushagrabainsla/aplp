@@ -32,12 +32,19 @@ but without the do syntax.
 Implement Times and Divide.  Try the Times case without monads (as we did with
 the Plus case).
 
-> applyOp Times mi mj = error "TBD"
+> applyOp Times mi mj =
+>	case mi of
+>     Nothing -> Nothing
+>	  Just i ->
+>	    case mj of
+>		  Nothing -> Nothing
+>		  Just j -> Just $ i * j
 
 For the Divide case, use bind (>>=) as we did for Minus.
 On an attempt to divide by 0, return Nothing as the answer.
 
-> applyOp Divide mi mj = error "TBD"
+> applyOp Divide mi mj =
+>   mi >>= (\i -> mj >>= (\j -> if j == 0 then Nothing else Just $ i `div` j))
 
 The following test cases will help you verify your changes.
 
@@ -53,9 +60,18 @@ The Plus case is done for you once again.  Be sure to check for zero with Divide
 >   i <- mi
 >   j <- mj
 >   return $ i + j
-> applyOp' Minus mi mj = error "TBD"
-> applyOp' Times mi mj = error "TBD"
-> applyOp' Divide mi mj  = error "TBD"
+> applyOp' Minus mi mj = do
+>   i <- mi
+>   j <- mj
+>   return $ i - j
+> applyOp' Times mi mj = do
+>   i <- mi
+>   j <- mj
+>   return $ i * j
+> applyOp' Divide mi mj = do
+>   i <- mi
+>   j <- mj
+>   if j == 0 then Nothing else return $ i `div` j
 
 More test cases:
 
