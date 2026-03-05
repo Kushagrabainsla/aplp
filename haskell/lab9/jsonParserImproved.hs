@@ -11,27 +11,21 @@ data JValue = JString String
 
 
 jsonFile :: GenParser Char st JValue
-jsonFile = do
-  result <- jsonArr
-  spaces
-  eof
-  return result
+jsonFile = spaces *> jsonElem <* spaces <* eof
 
 jsonElem :: GenParser Char st JValue
-jsonElem = do
-  spaces
-  result <- jsonElem'
-  spaces
-  return result
+jsonElem = spaces *> jsonElem' <* spaces
 
-jsonElem' = jsonArr
-        <|> jsonString
-        <|> jsonBool
+jsonElem' = try jsonObj
+        <|> try jsonArr
+        <|> try jsonString
+        <|> try jsonNumber
+        <|> try jsonBool
         <|> jsonNull
         <?> "json element"
 
 jsonString :: GenParser Char st JValue
-jsonString = jsonStringDQ <|> jsonStringSQ
+jsonString = try jsonStringDQ <|> jsonStringSQ
 
 jsonStringDQ = do
   char '"'
@@ -45,21 +39,29 @@ jsonStringSQ = do
   char '\''
   return $ JString s
 
-jsonBool = do
-  bStr <- string "true" <|> string "false"
-  return $ case bStr of
-    "true" -> JBool True
-    "false" -> JBool False
+jsonNumber :: GenParser Char st JValue
+jsonNumber = many1 digit >>= return . JNumber . read
 
-jsonNull = do
-  string "null"
-  return JNull
+jsonBool = (string "true" >> return (JBool True))
+       <|> (string "false" >> return (JBool False))
+
+jsonNull = string "null" >> return JNull
 
 jsonArr = do
   char '['
   arr <- jsonElem `sepBy` (char ',')
   char ']'
   return $ JArray arr
+
+jsonObj = char '{' *> (jsonPair `sepBy` char ',') <* char '}' >>= return . JObject
+
+jsonPair :: GenParser Char st (String, JValue)
+jsonPair = spaces *> jsonKey <* spaces <* char ':' <* spaces >>= \k -> jsonElem <* spaces >>= \v -> return (k, v)
+
+jsonKey :: GenParser Char st String
+jsonKey = (char '"' *> many (noneOf "\"") <* char '"')
+      <|> (char '\'' *> many (noneOf "'") <* char '\'') 
+      <|> many1 (letter <|> digit <|> char '_')
 
 
 

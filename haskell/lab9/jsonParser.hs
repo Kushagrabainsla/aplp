@@ -12,8 +12,7 @@ data JValue = JString String
 
 jsonFile :: GenParser Char st JValue
 jsonFile = do
-  result <- jsonArr
-  spaces
+  result <- jsonElem
   eof
   return result
 
@@ -24,8 +23,10 @@ jsonElem = do
   spaces
   return result
 
-jsonElem' = jsonArr
+jsonElem' = jsonObj
+        <|> jsonArr
         <|> jsonString
+        <|> jsonNumber
         <|> jsonBool
         <|> jsonNull
         <?> "json element"
@@ -45,6 +46,11 @@ jsonStringSQ = do
   char '\''
   return $ JString s
 
+jsonNumber :: GenParser Char st JValue
+jsonNumber = do
+  num <- many1 digit
+  return $ JNumber (read num)
+
 jsonBool = do
   bStr <- string "true" <|> string "false"
   return $ case bStr of
@@ -60,6 +66,29 @@ jsonArr = do
   arr <- jsonElem `sepBy` (char ',')
   char ']'
   return $ JArray arr
+
+jsonObj = do
+  char '{'
+  pairs <- jsonPair `sepBy` (char ',')
+  char '}'
+  return $ JObject pairs
+
+jsonPair :: GenParser Char st (String, JValue)
+jsonPair = do
+  spaces
+  key <- jsonKey
+  spaces
+  char ':'
+  spaces
+  value <- jsonElem
+  spaces
+  return (key, value)
+
+jsonKey :: GenParser Char st String
+jsonKey = do
+  (char '"' >> many (noneOf "\"") >>= \s -> char '"' >> return s)
+  <|> (char '\'' >> many (noneOf "'") >>= \s -> char '\'' >> return s)
+  <|> many1 (letter <|> digit <|> char '_')
 
 
 
