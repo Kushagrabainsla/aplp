@@ -1,0 +1,4 @@
+Today's lab explores how Maybe and Either can be used to avoid error messages.
+
+Get the codecheck URL from Canvas, and submit your zip file when completed.
+
