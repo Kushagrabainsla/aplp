@@ -59,9 +59,9 @@ Why does this work?  Here are a couple of tests to consider.
 
 Define the 'nott' and 'orr' operators below without using andd.
 
-> nott = error "TBD"
+> nott = \b -> b fls tru
 
-> orr = error "TBD"
+> orr = \b -> \c -> b tru c
 
 Here are some test cases:
 
@@ -134,7 +134,7 @@ Write the definition for 'nil' below.  (If you are unsure of what the
 definition should be, try walking through the derivation of
 "isEmpty (pair 1 2)".
 
-> nil = error "TBD"
+> nil = \x -> tru
 
 Now we can create some sample lists.  (Note that we are using Haskell numbers
 just for easy of testing, though they are not part of the lambda calculus.)
@@ -229,7 +229,7 @@ Alternately, we could define plus with our scc function:
 
 Define multiplication in a similar manner:
 
-> multiply = error "TBD"
+> multiply = \m -> \n -> \s -> \z -> m (n s) z
 
 
 For ease of use, you may use the following function to convert a Haskell integer
