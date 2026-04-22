@@ -21,7 +21,7 @@ from urllib.parse import urljoin, urlparse, unquote
 from urllib.request import Request, urlopen
 
 
-BASE_URL = "https://www.cs.sjsu.edu/~austin/cs252-spring26/labs/"
+BASE_URL = "https://www.cs.sjsu.edu/~austin/cs252-spring26/"
 DEFAULT_OUTPUT_DIR = "content"
 USER_AGENT = "Mozilla/5.0 (compatible; cs252-downloader/1.0)"
 
