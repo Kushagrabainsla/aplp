@@ -134,18 +134,17 @@ class Compiler {
       this.writeByte(ast.value);
       return;
     } else if (ast.type === BOOL) {
-      //
-      // ***YOUR CODE HERE***
-      //
-      // Booleans will be stored as either 1 for true, or as a 0 for false.
+      this.writeOp('PUSH1');
+      this.writeByte(ast.value ? 1 : 0);
       return;
     } else if (ast.type === VAR) {
-      //
-      // ***YOUR CODE HERE***
-      //
-      // We look up the offset for a variable and push the offset
-      // value on to the stack.  The 'MLOAD' operation will
-      // retrieve the value stored at that position in the memory.
+      let offset = this.varMap[ast.value];
+      if (offset === undefined) {
+        throw new Error(`Variable ${ast.value} is not defined.`);
+      }
+      this.writeOp('PUSH1');
+      this.writeByte(offset);
+      this.writeOp('MLOAD');
       return;
     }
 
@@ -167,30 +166,45 @@ class Compiler {
         break;
 
       case "define":
-        //
-        // ***YOUR CODE HERE***
-        //
-        // The define function lets us store variables.
-        //
-        // The variable name is stored in 'second.value'.
-        // Update the 'this.varMap' array to store the current
-        // value of 'this.varOffset'.
-        //
-        // The VM will need to push the value on to the stack,
-        // push 'this.varOffset' on to the stack, and then
-        // invoke 'MSTORE'.
-        //
-        // Increment this.varOffset so that it points to the next
-        // position in memory.
+        let varName = second.value;
+        this.writeBytecode(ast.children[2]);
+        this.writeOp('PUSH1');
+        this.writeByte(this.varOffset);
+        this.writeOp('MSTORE');
+        this.varMap[varName] = this.varOffset;
+        this.varOffset++;
         break;
 
       case "if":
-        //
-        // ***YOUR CODE HERE***
-        //
-        // EXTRA CREDIT!
-        // Add support for if expressions.
-        // The cond.scm file gives you some good examples.
+        let cond = second;
+        let thenExpr = ast.children[2];
+        let elseExpr = ast.children[3];
+
+        this.writeBytecode(cond);
+        this.writeOp('PUSH1');
+        let jumpToThenPlaceholder = this.offset;
+        this.writeByte(0); // placeholder
+        this.writeOp('JUMPI');
+
+        // Else branch
+        this.writeBytecode(elseExpr);
+        this.writeOp('PUSH1');
+        let jumpToEndPlaceholder = this.offset;
+        this.writeByte(0); // placeholder
+        this.writeOp('JUMP');
+
+        // Then branch
+        let thenLabel = this.offset;
+        this.writeOp('JUMPDEST');
+        this.writeBytecode(thenExpr);
+
+        // End
+        let endLabel = this.offset;
+        this.writeOp('JUMPDEST');
+
+        // Backfill offsets
+        this.bytecode.writeUInt8(thenLabel, jumpToThenPlaceholder);
+        this.bytecode.writeUInt8(endLabel, jumpToEndPlaceholder);
         break;
 
       case "+":
@@ -202,24 +216,20 @@ class Compiler {
         break;
 
       case "*":
-        //
-        // ***YOUR CODE HERE***
-        //
-        // Using the '+' case as a template, add support
-        // for '*'.  Note that the 'MUL' opcode only works
-        // with two arguments, whereas '*' allows an arbitrary
-        // number of arguments.
+        this.writeBytecode(second);
+        rest.forEach((x) => {
+          this.writeBytecode(x);
+          this.writeOp('MUL');
+        });
         break;
 
       case "-":
-        //
-        // ***YOUR CODE HERE***
-        //
-        // Add support for '-'.  The approach here will be
-        // Similar to the solution for '+' and '*'.  However,
-        // one key difference is that the order of the arguments
-        // matters.  You will need to use 'SWAP1' to get the
-        // arguments ordered correctly before invoking 'SUB'.
+        this.writeBytecode(second);
+        rest.forEach((x) => {
+          this.writeBytecode(x);
+          this.writeOp('SWAP1');
+          this.writeOp('SUB');
+        });
         break;
 
       default:

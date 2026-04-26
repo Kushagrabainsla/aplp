@@ -10,11 +10,52 @@ let opcodes = {
   },
   0x02: {
     mnemonic: 'MUL', evaluate: (vm) => {
-      //
-      // **YOUR CODE HERE**
-      //
-      // Pop the top two arguments off of the stack,
-      // and then push the result on to the stack.
+      let v1 = vm.stack.pop();
+      let v2 = vm.stack.pop();
+      vm.stack.push(v1 * v2);
+    }
+  },
+  0x03: {
+    mnemonic: 'SUB', evaluate: (vm) => {
+      let v1 = vm.stack.pop();
+      let v2 = vm.stack.pop();
+      vm.stack.push(v1 - v2);
+    }
+  },
+  0x90: {
+    mnemonic: 'SWAP1', evaluate: (vm) => {
+      let v1 = vm.stack.pop();
+      let v2 = vm.stack.pop();
+      vm.stack.push(v1);
+      vm.stack.push(v2);
+    }
+  },
+  0x52: {
+    mnemonic: 'MSTORE', evaluate: (vm) => {
+      let offset = vm.stack.pop();
+      let value = vm.stack.pop();
+      vm.memory[offset] = value;
+    }
+  },
+  0x51: {
+    mnemonic: 'MLOAD', evaluate: (vm) => {
+      let offset = vm.stack.pop();
+      vm.stack.push(vm.memory[offset]);
+    }
+  },
+  0x56: {
+    mnemonic: 'JUMP', evaluate: (vm) => {
+      let dest = vm.stack.pop();
+      vm.pc = dest - 1; // Subtracted 1 as vm.pc++ happens at the end of the loop
+    }
+  },
+  0x57: {
+    mnemonic: 'JUMPI', evaluate: (vm) => {
+      let dest = vm.stack.pop();
+      let condition = vm.stack.pop();
+      if (condition) {
+        vm.pc = dest - 1;
+      }
     }
   },
   0x5B: {
