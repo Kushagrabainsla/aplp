@@ -1,0 +1,33 @@
+Each presentation should be 5 minutes in length, with another 2 minutes for questions.
+
+
+Monday, May 4th
+--------------------
+Jonathan Macoco.  Memory Management Survey.
+Albert Lin, Vedant Sawal, and Angela Yang.  Comparing Object-Oriented Design in Smalltalk, C++, and Java.
+Aaron Dang.  Gradual Typing.
+Behdad Feilizadeh.  A Gradual Type Checker for Bash Function Calls and Pipelines.
+Parhuam Jalalian.  TypeScript vs. JavaScript: A Survey of Gradual Typing, Language Design, and Practical Tradeoffs.
+Arnav Dewan and Satheesh Kumar G R.  Resumex: A Domain-Specific Language for Resume Generation.
+Johnny Dinh.  Chroma: A Domain-Specific Language for Music Composition.
+Gitika Rath and Skanda Gonur Nagaraj.  A Live-Coding Language for Real-Time Music Generation.
+Krishna Mula, Kushagra Bainsla, and Tejas Chakkarwar.  Design and Implementation of a Small Programming Language in Haskell.
+Abdel Rahman Alnajjar.  AJS: An English-Like DSL for Stock Trading.
+Emanuel Baca and Khoa Pham.  Lighthouse: a Logic-Based Redirection Language.
+
+
+
+Wednesday, May 6th
+-----------------------
+Amrutha Konchada, Aryan Kumar, and Venkata Srija Bhupathiraju.  Metaprogramming Across Paradigms: A Comparative Study of Smalltalk, Common Lisp (CLOS), and Lua.
+Ankush Chandrashekar, Gautam Panigrahi, and Kunal Elchipuram.  A Language for AI Agent Workflows.
+Sushmitha Chikkanayakanahalli Gopala.  Implementing a Small Simply Typed Functional Language with Pattern Matching.
+Caleb Fringer.  Language Server for the IMP Language.
+Adrian Guerra.  Compiler for SPIR-V.
+Aditya Patel, Himavanth Karpurapu.  Extensible Markdown-to-LaTeX Compiler in Haskell.
+Gargi Ajit Kulkarni.  Interpreter for a Stack-Based Language with User-Defined Words.
+Manuvikash Saravanakumar.  Purple: A DSL for Formula 1 Race Strategy.
+Yuri Tatishchev.  Firewall Language (FWL) - a higher level language for configuring firewall rules.
+Ananya Tyagi.  Static Analyzer for a Small Expression Language.
+William Wenger and Zi Yan Zhang.  TBD.
+
