@@ -1,8 +1,8 @@
 # Homework 3 run notes
 
-## Issue in HW3-1.hs
+## Issue in HW3.hs
 
-The parser in HW3-1.hs only accepts the token "end" to close blocks. The provided sample .imp programs use "endif" and "endwhile" instead of "end". This causes parse errors like:
+The parser in HW3.hs only accepts the token "end" to close blocks. The provided sample .imp programs use "endif" and "endwhile" instead of "end". This causes parse errors like:
 
 - unexpected reserved word if
 - unexpected reserved word while
@@ -20,5 +20,5 @@ This is implemented by adding helper parsers that accept either keyword, and by 
 
 ## Test commands
 
-runhaskell haskell/homework3/HW3-1.hs content/hw__hw3__test.imp
+runhaskell haskell/homework3/HW3.hs content/hw__hw3__test.imp
 runhaskell haskell/homework3/HW3-latest.hs content/hw__hw3__test.imp
