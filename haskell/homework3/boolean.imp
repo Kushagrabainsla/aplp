@@ -1,6 +1,0 @@
-x := true;
-y := false;
-z := x and y;
-w := x or y;
-v := not x;
-skip

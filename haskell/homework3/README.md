@@ -1,4 +1,6 @@
-In this assignment, you will write a parser for the language that we developed last time. Download the materials from the course website.
+Homework 3: Write a parser
+Due Mar 27 by 11:59pm Points 20 Submitting a file upload File Types hs
+In this assignment, you will write a parser for the language that we developed last time.  Download the materials from the course website.
 
 You will also be updating your interpreter to handle errors more gracefully by using the Either Monad.  Complete WhileInterp.hs so that it can handle the .imp files provided.  (The language that we have looked at is often referred to as "IMP", since it is an imperative language).
 
